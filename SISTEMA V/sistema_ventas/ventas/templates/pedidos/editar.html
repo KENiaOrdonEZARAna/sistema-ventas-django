@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .pedido-header {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .pedido-header h3 {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 700;
+    }
+
+    .pedido-header i {
+        font-size: 2rem;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .section-title i {
+        color: #2563eb;
+        font-size: 1.5rem;
+    }
+
+    .section-title h4 {
+        margin: 0;
+        color: #1e293b;
+        font-weight: 700;
+    }
+
+    .btn-primary-gradient {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-primary-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-success-gradient {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-success-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .table-detalles {
+        background: white;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .table-detalles thead {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+
+    .table-detalles thead th {
+        font-weight: 700;
+        color: #1e293b;
+        padding: 1rem;
+        border: none;
+    }
+
+    .table-detalles tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    .table-detalles tbody tr:hover {
+        background-color: #f8fafc;
+    }
+
+    .total-section {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .total-section strong {
+        font-size: 1.5rem;
+        color: #065f46;
+    }
+
+    .total-section .amount {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #047857;
+    }
+
+    .empty-detalles {
+        text-align: center;
+        padding: 3rem;
+        color: #64748b;
+    }
+
+    .empty-detalles i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+</style>
+
+<div class="pedido-header">
+    <h3>
+        <i class="fas fa-edit"></i>
+        Editar Pedido #{{ pedido.id }}
+    </h3>
+</div>
+
+<!-- Información del Pedido -->
+<div class="section-card">
+    <div class="section-title">
+        <i class="fas fa-file-alt"></i>
+        <h4>Información del Pedido</h4>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary btn-primary-gradient" name="save_pedido" type="submit">
+            <i class="fas fa-save me-2"></i> Guardar Pedido
+        </button>
+    </form>
+</div>
+
+<!-- Agregar Detalles -->
+<div class="section-card">
+    <div class="section-title">
+        <i class="fas fa-plus-square"></i>
+        <h4>Agregar Productos</h4>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ detalle_form.as_p }}
+        <button class="btn btn-success btn-success-gradient" name="add_detalle" type="submit">
+            <i class="fas fa-plus-circle me-2"></i> Agregar Detalle
+        </button>
+    </form>
+</div>
+
+<!-- Lista de Detalles -->
+<div class="section-card">
+    <div class="section-title">
+        <i class="fas fa-list"></i>
+        <h4>Detalles del Pedido</h4>
+    </div>
+
+    <table class="table table-detalles">
+        <thead>
+        <tr>
+            <th width="30%">Producto</th>
+            <th width="15%">Cantidad</th>
+            <th width="20%">Precio Unit.</th>
+            <th width="20%">Subtotal</th>
+            <th width="15%">Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for d in detalles %}
+            <tr>
+                <td>
+                    <i class="fas fa-box text-muted me-2"></i>
+                    <strong>{{ d.producto.nombre }}</strong>
+                </td>
+                <td><span class="badge bg-secondary">{{ d.cantidad }}</span></td>
+                <td>${{ d.precio_unitario }}</td>
+                <td><strong>${{ d.subtotal }}</strong></td>
+                <td>
+                    <a class="btn btn-sm btn-primary" href="{% url 'ventas:editar_detalle' d.pk %}">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a class="btn btn-sm btn-danger" href="{% url 'ventas:eliminar_detalle' d.pk %}">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">
+                    <div class="empty-detalles">
+                        <i class="fas fa-inbox"></i>
+                        <p class="mb-0">No hay detalles en este pedido</p>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total-section">
+        <strong>Total del Pedido:</strong>
+        <div class="amount">${{ pedido.total }}</div>
+    </div>
+</div>
+{% endblock %}

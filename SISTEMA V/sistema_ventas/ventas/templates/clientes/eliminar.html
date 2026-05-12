@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .delete-container {
+        max-width: 500px;
+        margin: 3rem auto;
+    }
+
+    .delete-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .delete-header {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .delete-header i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    .delete-header h3 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .delete-body {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .delete-message {
+        font-size: 1.1rem;
+        color: #475569;
+        margin-bottom: 1rem;
+    }
+
+    .delete-item {
+        background: #fef2f2;
+        border: 2px solid #fecaca;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .delete-item i {
+        font-size: 2rem;
+        color: #dc2626;
+        margin-bottom: 0.5rem;
+    }
+
+    .delete-item strong {
+        color: #dc2626;
+        font-size: 1.25rem;
+        display: block;
+        margin-top: 0.5rem;
+    }
+
+    .delete-warning {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin: 1.5rem 0;
+        text-align: left;
+    }
+
+    .delete-warning i {
+        color: #f59e0b;
+        margin-right: 0.5rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-delete {
+        flex: 1;
+        padding: 0.875rem;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-cancel-delete {
+        flex: 1;
+        padding: 0.875rem;
+        background: #64748b;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-cancel-delete:hover {
+        background: #475569;
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="delete-container">
+    <div class="delete-card">
+        <div class="delete-header">
+            <i class="fas fa-user-times"></i>
+            <h3>Eliminar Cliente</h3>
+        </div>
+
+        <div class="delete-body">
+            <p class="delete-message">¿Está seguro que desea eliminar este cliente?</p>
+
+            <div class="delete-item">
+                <i class="fas fa-user"></i>
+                <strong>{{ cliente.nombres }} {{ cliente.apellidos }}</strong>
+                <p class="text-muted mb-0 mt-2">
+                    <small><i class="fas fa-id-card me-1"></i>{{ cliente.cedula }}</small>
+                </p>
+            </div>
+
+            <div class="delete-warning">
+                <i class="fas fa-info-circle"></i>
+                <small>Esta acción no se puede deshacer. Todos los pedidos y datos relacionados podrían verse afectados.</small>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <button class="btn btn-danger btn-delete" type="submit">
+                        <i class="fas fa-trash me-2"></i> Sí, Eliminar
+                    </button>
+                    <a class="btn btn-secondary btn-cancel-delete" href="{% url 'ventas:listar_clientes' %}">
+                        <i class="fas fa-arrow-left me-2"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

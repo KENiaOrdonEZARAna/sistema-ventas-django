@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+media
+
+# Virtualenv
+venv/
+ENV/
+env/
+.venv/
+SISTEMA V/ent/
+
+# VS Code
+.vscode/
+
+# Python virtual environment files
+pyvenv.cfg
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PyCharm
+.idea/
+
+# Node
+node_modules/
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+
+# Django migrations (optional, but usually committed)
+# Keep migrations if shared across developers
+#**/migrations/*.pyc
+#**/migrations/__pycache__/
